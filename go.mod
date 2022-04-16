@@ -1,4 +1,4 @@
-module golden.shortcutter.com
+module github.com/GabrielBrandao13/golden-shortcutter
 
 go 1.17
 
