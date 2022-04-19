@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/GabrielBrandao13/golden-shortcutter/database"
 	"github.com/GabrielBrandao13/golden-shortcutter/model/shortedLink"
 )
 
@@ -17,6 +18,7 @@ func GenerateUrl(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&body)
 	url := shortedLink.New(body.Ref)
 
+	database.CreateUrl(url)
 	finalJson, _ := json.Marshal(url)
 
 	w.Write(finalJson)
@@ -31,7 +33,9 @@ func GetUrl(w http.ResponseWriter, r *http.Request) {
 
 	json.NewDecoder(r.Body).Decode(&body)
 
-	finalJson, _ := json.Marshal(shortedLink.ShortedLink{HashCode: body.HashCode, Ref: "nourlyet.com"})
+	ref := database.GetUrlByHashCode(body.HashCode)
+
+	finalJson, _ := json.Marshal(shortedLink.ShortedLink{HashCode: body.HashCode, Ref: ref})
 
 	w.Write(finalJson)
 }
