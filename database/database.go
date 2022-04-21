@@ -18,8 +18,8 @@ func getDatabase() *gorm.DB {
 
 type urlDatabaseModel struct {
 	gorm.Model
-	ref      string
-	hashCode string
+	Ref      string
+	HashCode string
 }
 
 func Migrate() {
@@ -32,12 +32,12 @@ func GetUrlByHashCode(hashCode string) string {
 	db := getDatabase()
 
 	var result urlDatabaseModel
-	db.First(&result, "hashCode = ?", hashCode)
-	return result.ref
+	db.First(&result, "hash_code = ?", hashCode)
+	return result.Ref
 }
 
 func CreateUrl(link shortedLink.ShortedLink) {
 	db := getDatabase()
 
-	db.Create(&urlDatabaseModel{ref: link.Ref, hashCode: link.HashCode})
+	db.Create(&urlDatabaseModel{Ref: link.Ref, HashCode: link.HashCode})
 }
