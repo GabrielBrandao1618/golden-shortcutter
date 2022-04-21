@@ -1,10 +1,9 @@
 package database
 
 import (
+	"github.com/GabrielBrandao13/golden-shortcutter/model/shortedLink"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-
-	"github.com/GabrielBrandao13/golden-shortcutter/model/shortedLink"
 )
 
 func getDatabase() *gorm.DB {
@@ -36,8 +35,30 @@ func GetUrlByHashCode(hashCode string) string {
 	return result.Ref
 }
 
-func CreateUrl(link shortedLink.ShortedLink) {
+func checkIfUrlAlreadyExists(ref string) (exists bool, hashCode string) {
 	db := getDatabase()
+	var result urlDatabaseModel
 
-	db.Create(&urlDatabaseModel{Ref: link.Ref, HashCode: link.HashCode})
+	db.First(&result, "ref = ?", ref)
+	if result.HashCode != "" {
+		return true, result.HashCode
+	}
+	return result.HashCode != "", result.HashCode
+}
+
+func CreateUrl(ref string) shortedLink.ShortedLink {
+	db := getDatabase()
+	var linkToInsert shortedLink.ShortedLink
+	linkToInsert.Ref = ref
+
+	urlAlreadyExists, existingHashCode := checkIfUrlAlreadyExists(ref)
+
+	if !urlAlreadyExists {
+		linkToInsert = shortedLink.New(ref)
+		db.Create(&urlDatabaseModel{Ref: linkToInsert.Ref, HashCode: linkToInsert.HashCode})
+	} else {
+		linkToInsert.HashCode = existingHashCode
+	}
+	return linkToInsert
+
 }

@@ -18,8 +18,8 @@ func GenerateUrl(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&body)
 	url := shortedLink.New(body.Ref)
 
-	database.CreateUrl(url)
-	finalJson, _ := json.Marshal(url)
+	result := database.CreateUrl(url.Ref)
+	finalJson, _ := json.Marshal(result)
 
 	w.Write(finalJson)
 }
