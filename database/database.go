@@ -40,9 +40,7 @@ func checkIfUrlAlreadyExists(ref string) (exists bool, hashCode string) {
 	var result urlDatabaseModel
 
 	db.First(&result, "ref = ?", ref)
-	if result.HashCode != "" {
-		return true, result.HashCode
-	}
+
 	return result.HashCode != "", result.HashCode
 }
 

@@ -8,7 +8,6 @@ import (
 
 	"github.com/GabrielBrandao13/golden-shortcutter/database"
 	"github.com/GabrielBrandao13/golden-shortcutter/routes"
-	"github.com/gorilla/mux"
 )
 
 func setupEnv() {
@@ -22,9 +21,5 @@ func main() {
 	setupEnv()
 	database.Migrate()
 
-	r := mux.NewRouter()
-	r.HandleFunc("/generateUrl", routes.GenerateUrl)
-	r.HandleFunc("/getUrl", routes.GetUrl)
-
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(":8080", routes.GetRouter())
 }
