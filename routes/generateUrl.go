@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/GabrielBrandao13/golden-shortcutter/database"
-	"github.com/GabrielBrandao13/golden-shortcutter/model/shortedLink"
+	"github.com/GabrielBrandao1618/golden-shortcutter/database"
+	"github.com/GabrielBrandao1618/golden-shortcutter/model/shortedLink"
 )
 
 type generateUrlRequestBody struct {

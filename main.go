@@ -6,8 +6,8 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/GabrielBrandao13/golden-shortcutter/database"
-	"github.com/GabrielBrandao13/golden-shortcutter/routes"
+	"github.com/GabrielBrandao1618/golden-shortcutter/database"
+	"github.com/GabrielBrandao1618/golden-shortcutter/routes"
 )
 
 func setupEnv() {

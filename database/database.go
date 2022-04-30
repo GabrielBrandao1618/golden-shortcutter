@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/GabrielBrandao13/golden-shortcutter/model/shortedLink"
+	"github.com/GabrielBrandao1618/golden-shortcutter/model/shortedLink"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
