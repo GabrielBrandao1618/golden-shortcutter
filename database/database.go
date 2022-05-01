@@ -15,47 +15,47 @@ func getDatabase() *gorm.DB {
 	return db
 }
 
-type urlDatabaseModel struct {
+type linkDbModel struct {
 	gorm.Model
-	Ref      string
-	HashCode string
+	Ref  string
+	Name string
 }
 
 func Migrate() {
 	db := getDatabase()
 
-	db.AutoMigrate(&urlDatabaseModel{})
+	db.AutoMigrate(&linkDbModel{})
 }
 
-func GetUrlByHashCode(hashCode string) string {
+func GetUrlByCustomName(name string) string {
 	db := getDatabase()
 
-	var result urlDatabaseModel
-	db.First(&result, "hash_code = ?", hashCode)
+	var result linkDbModel
+	db.First(&result, "name = ?", name)
 	return result.Ref
 }
 
-func checkIfUrlAlreadyExists(ref string) (exists bool, hashCode string) {
+func checkIfLinkAlreadyExists(ref string) (exists bool, hashCode string) {
 	db := getDatabase()
-	var result urlDatabaseModel
+	var result linkDbModel
 
 	db.First(&result, "ref = ?", ref)
 
-	return result.HashCode != "", result.HashCode
+	return result.Name != "", result.Name
 }
 
-func CreateUrl(ref string) shortedLink.ShortedLink {
+func CreateUrl(ref string, name string) shortedLink.ShortedLink {
 	db := getDatabase()
 	var linkToInsert shortedLink.ShortedLink
 	linkToInsert.Ref = ref
 
-	urlAlreadyExists, existingHashCode := checkIfUrlAlreadyExists(ref)
+	linkAlreadyExists, existingHashCode := checkIfLinkAlreadyExists(ref)
 
-	if !urlAlreadyExists {
-		linkToInsert = shortedLink.New(ref)
-		db.Create(&urlDatabaseModel{Ref: linkToInsert.Ref, HashCode: linkToInsert.HashCode})
+	if !linkAlreadyExists {
+		linkToInsert = shortedLink.ShortedLink{Ref: ref, Name: name}
+		db.Create(&linkDbModel{Ref: linkToInsert.Ref, Name: linkToInsert.Name})
 	} else {
-		linkToInsert.HashCode = existingHashCode
+		linkToInsert.Name = existingHashCode
 	}
 	return linkToInsert
 
