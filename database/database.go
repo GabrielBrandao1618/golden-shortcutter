@@ -15,48 +15,73 @@ func getDatabase() *gorm.DB {
 	return db
 }
 
-type urlDatabaseModel struct {
+type linkDbModel struct {
 	gorm.Model
-	Ref      string
-	HashCode string
+	Ref  string
+	Name string
 }
 
 func Migrate() {
 	db := getDatabase()
 
-	db.AutoMigrate(&urlDatabaseModel{})
+	db.AutoMigrate(&linkDbModel{})
 }
 
-func GetUrlByHashCode(hashCode string) string {
+func GetUrlByCustomName(name string) string {
 	db := getDatabase()
 
-	var result urlDatabaseModel
-	db.First(&result, "hash_code = ?", hashCode)
+	var result linkDbModel
+	db.First(&result, "name = ?", name)
 	return result.Ref
 }
 
-func checkIfUrlAlreadyExists(ref string) (exists bool, hashCode string) {
+func checkIfLinkAlreadyExists(ref string) string {
 	db := getDatabase()
-	var result urlDatabaseModel
+	var result linkDbModel
 
 	db.First(&result, "ref = ?", ref)
 
-	return result.HashCode != "", result.HashCode
+	return result.Name
+}
+func checkIfCustomNameIsAlreadyInUse(customName string) bool {
+	db := getDatabase()
+	var result linkDbModel
+
+	db.First(&result, "name = ?", customName)
+
+	return result.Ref != ""
 }
 
-func CreateUrl(ref string) shortedLink.ShortedLink {
+type createUrlResult struct {
+	Sucess      bool
+	Msg         string
+	ShortedLink shortedLink.ShortedLink
+}
+
+func CreateUrl(ref string, name string) createUrlResult {
 	db := getDatabase()
-	var linkToInsert shortedLink.ShortedLink
-	linkToInsert.Ref = ref
+	var result createUrlResult
+	result.ShortedLink.Ref = ref
 
-	urlAlreadyExists, existingHashCode := checkIfUrlAlreadyExists(ref)
-
-	if !urlAlreadyExists {
-		linkToInsert = shortedLink.New(ref)
-		db.Create(&urlDatabaseModel{Ref: linkToInsert.Ref, HashCode: linkToInsert.HashCode})
-	} else {
-		linkToInsert.HashCode = existingHashCode
+	if checkIfCustomNameIsAlreadyInUse(name) {
+		result.Sucess = false
+		result.Msg = "Custom name already in use"
+		return result
 	}
-	return linkToInsert
+
+	existingCustomName := checkIfLinkAlreadyExists(ref)
+
+	if existingCustomName == "" {
+		result.ShortedLink = shortedLink.ShortedLink{Ref: ref, Name: name}
+		db.Create(&linkDbModel{Ref: result.ShortedLink.Ref, Name: result.ShortedLink.Name})
+		result.Msg = "Link created successfully!"
+		result.Sucess = true
+		return result
+	}
+
+	result.ShortedLink.Name = existingCustomName
+	result.Msg = "Link already created!"
+	result.Sucess = true
+	return result
 
 }

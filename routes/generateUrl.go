@@ -9,16 +9,17 @@ import (
 )
 
 type generateUrlRequestBody struct {
-	Ref string `json:"ref"`
+	Ref  string `json:"ref"`
+	Name string `json:"name"`
 }
 
 func GenerateUrl(w http.ResponseWriter, r *http.Request) {
-	var body generateUrlRequestBody
+	var body shortedLink.ShortedLink
 
 	json.NewDecoder(r.Body).Decode(&body)
-	url := shortedLink.New(body.Ref)
+	url := shortedLink.ShortedLink{Ref: body.Ref, Name: body.Name}
 
-	result := database.CreateUrl(url.Ref)
+	result := database.CreateUrl(url.Ref, body.Name)
 	finalJson, _ := json.Marshal(result)
 
 	w.Write(finalJson)

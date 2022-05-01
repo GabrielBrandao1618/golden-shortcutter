@@ -9,7 +9,7 @@ import (
 )
 
 type getUrlRequestBody struct {
-	HashCode string `json:"hashCode"`
+	Name string `json:"name"`
 }
 
 func GetUrl(w http.ResponseWriter, r *http.Request) {
@@ -17,9 +17,9 @@ func GetUrl(w http.ResponseWriter, r *http.Request) {
 
 	json.NewDecoder(r.Body).Decode(&body)
 
-	ref := database.GetUrlByHashCode(body.HashCode)
+	ref := database.GetUrlByCustomName(body.Name)
 
-	finalJson, _ := json.Marshal(shortedLink.ShortedLink{HashCode: body.HashCode, Ref: ref})
+	finalJson, _ := json.Marshal(shortedLink.ShortedLink{Name: body.Name, Ref: ref})
 
 	w.Write(finalJson)
 }
