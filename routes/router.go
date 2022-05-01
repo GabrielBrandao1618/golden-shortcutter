@@ -7,8 +7,8 @@ import (
 func GetRouter() *mux.Router {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/generateUrl", GenerateUrl)
-	router.HandleFunc("/getUrl", GetUrl)
+	router.HandleFunc("/createLink", CreateLink).Methods("POST")
+	router.HandleFunc("/getUrl/{name}", GetUrl).Methods("GET")
 
 	return router
 }

@@ -8,12 +8,12 @@ import (
 	"github.com/GabrielBrandao1618/golden-shortcutter/model/shortedLink"
 )
 
-type generateUrlRequestBody struct {
+type createLinkRequestBody struct {
 	Ref  string `json:"ref"`
 	Name string `json:"name"`
 }
 
-func GenerateUrl(w http.ResponseWriter, r *http.Request) {
+func CreateLink(w http.ResponseWriter, r *http.Request) {
 	var body shortedLink.ShortedLink
 
 	json.NewDecoder(r.Body).Decode(&body)
