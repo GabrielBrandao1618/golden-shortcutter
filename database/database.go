@@ -35,13 +35,13 @@ func GetUrlByCustomName(name string) string {
 	return result.Ref
 }
 
-func checkIfLinkAlreadyExists(ref string) (exists bool, hashCode string) {
+func checkIfLinkAlreadyExists(ref string) string {
 	db := getDatabase()
 	var result linkDbModel
 
 	db.First(&result, "ref = ?", ref)
 
-	return result.Name != "", result.Name
+	return result.Name
 }
 func checkIfCustomNameIsAlreadyInUse(customName string) bool {
 	db := getDatabase()
@@ -69,9 +69,9 @@ func CreateUrl(ref string, name string) createUrlResult {
 		return result
 	}
 
-	linkAlreadyExists, existingCustomName := checkIfLinkAlreadyExists(ref)
+	existingCustomName := checkIfLinkAlreadyExists(ref)
 
-	if !linkAlreadyExists {
+	if existingCustomName == "" {
 		result.shortedLink = shortedLink.ShortedLink{Ref: ref, Name: name}
 		db.Create(&linkDbModel{Ref: result.shortedLink.Ref, Name: result.shortedLink.Name})
 		result.msg = "Link created successfully!"
