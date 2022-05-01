@@ -49,13 +49,13 @@ func CreateUrl(ref string, name string) shortedLink.ShortedLink {
 	var linkToInsert shortedLink.ShortedLink
 	linkToInsert.Ref = ref
 
-	linkAlreadyExists, existingHashCode := checkIfLinkAlreadyExists(ref)
+	linkAlreadyExists, existingCustomName := checkIfLinkAlreadyExists(ref)
 
 	if !linkAlreadyExists {
 		linkToInsert = shortedLink.ShortedLink{Ref: ref, Name: name}
 		db.Create(&linkDbModel{Ref: linkToInsert.Ref, Name: linkToInsert.Name})
 	} else {
-		linkToInsert.Name = existingHashCode
+		linkToInsert.Name = existingCustomName
 	}
 	return linkToInsert
 
