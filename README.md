@@ -4,11 +4,13 @@ Uma API de encurtador de links simples
 
 ## Endpoints
 
-[/generatrUrl](#generateurl)
+[/createLink](#createlink)
 
 [/getUrl](#geturl)
 
-### /generateUrl
+### /createLink
+
+Método: `POST`
 
 #### Parâmetros
 
@@ -21,8 +23,8 @@ Uma API de encurtador de links simples
 
 ```json
 {
-  "ref": "github.com",
-  "name": "github"
+  "ref": "image.google.com",
+  "name": "googleImage"
 }
 ```
 
@@ -43,18 +45,12 @@ Caso o link já tenha sido criado porém com outro nome customizado(ou até o me
 
 ### /getUrl
 
-#### Parâmetros
+Método: `GET`
 
-| nome | tipo   |
-| ---- | ------ |
-| name | string |
+É utilizado para retornar o link criado, para isso ele recebe o nome customizado como um parâmetro de rota, por exemplo:
 
-É utilizado para retornar o link criado, para isso ele recebe o nome customizado como parâmetro. Exemplo de requisição à seguir:
-
-```json
-{
-  "name": "googleImage"
-}
+```bash
+curl /getUrl/googleImage
 ```
 
 Exemplo de resposta do servidor
