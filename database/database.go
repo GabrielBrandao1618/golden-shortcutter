@@ -53,33 +53,35 @@ func checkIfCustomNameIsAlreadyInUse(customName string) bool {
 }
 
 type createUrlResult struct {
-	sucess      bool
-	msg         string
-	shortedLink shortedLink.ShortedLink
+	Sucess      bool
+	Msg         string
+	ShortedLink shortedLink.ShortedLink
 }
 
 func CreateUrl(ref string, name string) createUrlResult {
 	db := getDatabase()
 	var result createUrlResult
-	result.shortedLink.Ref = ref
+	result.ShortedLink.Ref = ref
 
 	if checkIfCustomNameIsAlreadyInUse(name) {
-		result.sucess = false
-		result.msg = "Custom name already in use"
+		result.Sucess = false
+		result.Msg = "Custom name already in use"
 		return result
 	}
 
 	existingCustomName := checkIfLinkAlreadyExists(ref)
 
 	if existingCustomName == "" {
-		result.shortedLink = shortedLink.ShortedLink{Ref: ref, Name: name}
-		db.Create(&linkDbModel{Ref: result.shortedLink.Ref, Name: result.shortedLink.Name})
-		result.msg = "Link created successfully!"
-		result.sucess = true
+		result.ShortedLink = shortedLink.ShortedLink{Ref: ref, Name: name}
+		db.Create(&linkDbModel{Ref: result.ShortedLink.Ref, Name: result.ShortedLink.Name})
+		result.Msg = "Link created successfully!"
+		result.Sucess = true
 		return result
 	}
 
-	result.shortedLink.Name = existingCustomName
+	result.ShortedLink.Name = existingCustomName
+	result.Msg = "Link already created!"
+	result.Sucess = true
 	return result
 
 }
