@@ -4,22 +4,18 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/GabrielBrandao1618/golden-shortcutter/database"
 	"github.com/GabrielBrandao1618/golden-shortcutter/model/shortedLink"
 )
 
-type getUrlRequestBody struct {
-	Name string `json:"name"`
-}
-
 func GetUrl(w http.ResponseWriter, r *http.Request) {
-	var body getUrlRequestBody
+	vars := mux.Vars(r)
 
-	json.NewDecoder(r.Body).Decode(&body)
+	ref := database.GetUrlByCustomName(vars["name"])
 
-	ref := database.GetUrlByCustomName(body.Name)
-
-	finalJson, _ := json.Marshal(shortedLink.ShortedLink{Name: body.Name, Ref: ref})
+	finalJson, _ := json.Marshal(shortedLink.ShortedLink{Name: vars["name"], Ref: ref})
 
 	w.Write(finalJson)
 }
