@@ -43,20 +43,43 @@ func checkIfLinkAlreadyExists(ref string) (exists bool, hashCode string) {
 
 	return result.Name != "", result.Name
 }
-
-func CreateUrl(ref string, name string) shortedLink.ShortedLink {
+func checkIfCustomNameIsAlreadyInUse(customName string) bool {
 	db := getDatabase()
-	var linkToInsert shortedLink.ShortedLink
-	linkToInsert.Ref = ref
+	var result linkDbModel
+
+	db.First(&result, "name = ?", customName)
+
+	return result.Ref != ""
+}
+
+type createUrlResult struct {
+	sucess      bool
+	msg         string
+	shortedLink shortedLink.ShortedLink
+}
+
+func CreateUrl(ref string, name string) createUrlResult {
+	db := getDatabase()
+	var result createUrlResult
+	result.shortedLink.Ref = ref
+
+	if checkIfCustomNameIsAlreadyInUse(name) {
+		result.sucess = false
+		result.msg = "Custom name already in use"
+		return result
+	}
 
 	linkAlreadyExists, existingCustomName := checkIfLinkAlreadyExists(ref)
 
 	if !linkAlreadyExists {
-		linkToInsert = shortedLink.ShortedLink{Ref: ref, Name: name}
-		db.Create(&linkDbModel{Ref: linkToInsert.Ref, Name: linkToInsert.Name})
-	} else {
-		linkToInsert.Name = existingCustomName
+		result.shortedLink = shortedLink.ShortedLink{Ref: ref, Name: name}
+		db.Create(&linkDbModel{Ref: result.shortedLink.Ref, Name: result.shortedLink.Name})
+		result.msg = "Link created successfully!"
+		result.sucess = true
+		return result
 	}
-	return linkToInsert
+
+	result.shortedLink.Name = existingCustomName
+	return result
 
 }
