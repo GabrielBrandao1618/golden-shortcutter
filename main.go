@@ -17,11 +17,7 @@ func main() {
 	allowedHeaders := handlers.AllowedHeaders([]string{"Content-Type", "Access-Control-Allow-Origin"})
 	allowedMethods := handlers.AllowedMethods([]string{"POST", "GET"})
 
-	port, err := os.Getenv("PORT")
-
-	if err != nil {
-		port = "3000"
-	}
+	port := os.Getenv("PORT")
 
 	http.ListenAndServe(":"+port, handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(routes.GetRouter()))
 }
