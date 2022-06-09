@@ -18,6 +18,9 @@ func main() {
 	allowedMethods := handlers.AllowedMethods([]string{"POST", "GET"})
 
 	port := os.Getenv("PORT")
+	if port == ""{
+		port = "8080"
+	}
 
 	http.ListenAndServe(":"+port, handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(routes.GetRouter()))
 }
