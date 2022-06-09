@@ -1,0 +1,1 @@
+web: golden-shortcutter
