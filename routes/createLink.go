@@ -8,11 +8,6 @@ import (
 	"github.com/GabrielBrandao1618/golden-shortcutter/model/shortedLink"
 )
 
-type createLinkRequestBody struct {
-	Ref  string `json:"ref"`
-	Name string `json:"name"`
-}
-
 func CreateLink(w http.ResponseWriter, r *http.Request) {
 	var body shortedLink.ShortedLink
 
