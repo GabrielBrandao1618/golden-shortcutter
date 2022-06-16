@@ -13,6 +13,9 @@ import (
 func GetUrl(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	ref := database.GetUrlByCustomName(vars["name"])
+	if ref != "" {
+		database.IncrementVisitsCount(vars["name"])
+	}
 
 	finalJson, _ := json.Marshal(shortedLink.ShortedLink{Name: vars["name"], Ref: ref})
 

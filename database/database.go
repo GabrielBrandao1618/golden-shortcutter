@@ -19,6 +19,7 @@ type linkDbModel struct {
 	gorm.Model
 	Ref  string
 	Name string
+	Visits uint64
 }
 
 func Migrate() {
@@ -84,4 +85,13 @@ func CreateUrl(ref string, name string) createUrlResult {
 	result.Sucess = true
 	return result
 
+}
+
+func IncrementVisitsCount(customName string){
+	var link linkDbModel
+	db := getDatabase()
+
+	db.First(&link, "name = ?", customName)
+	link.Visits = link.Visits+1
+	db.Save(&link)
 }
