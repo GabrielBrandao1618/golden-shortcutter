@@ -17,8 +17,7 @@ func getDatabase() *gorm.DB {
 
 type linkDbModel struct {
 	gorm.Model
-	Ref  string
-	Name string
+	shortedLink.ShortedLink
 	Visits uint64
 }
 
@@ -54,9 +53,9 @@ func checkIfCustomNameIsAlreadyInUse(customName string) bool {
 }
 
 type createUrlResult struct {
-	Sucess      bool
-	Msg         string
-	ShortedLink shortedLink.ShortedLink
+	Sucess      bool `json:"sucess"`
+	Msg         string `json:"msg"`
+	ShortedLink shortedLink.ShortedLink `json:"shortedLink"`
 }
 
 func CreateUrl(ref string, name string) createUrlResult {
@@ -74,7 +73,7 @@ func CreateUrl(ref string, name string) createUrlResult {
 
 	if existingCustomName == "" {
 		result.ShortedLink = shortedLink.ShortedLink{Ref: ref, Name: name}
-		db.Create(&linkDbModel{Ref: result.ShortedLink.Ref, Name: result.ShortedLink.Name})
+		db.Create(&linkDbModel{ShortedLink: shortedLink.ShortedLink{Ref: result.ShortedLink.Ref, Name: result.ShortedLink.Name}})
 		result.Msg = "Link created successfully!"
 		result.Sucess = true
 		return result
