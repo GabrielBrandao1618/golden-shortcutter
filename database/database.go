@@ -94,3 +94,10 @@ func IncrementVisitsCount(customName string){
 	link.Visits = link.Visits+1
 	db.Save(&link)
 }
+
+func GetVisitsCount(customName string) uint64 {
+	var link linkDbModel
+	db := getDatabase()
+	db.First(&link, "name = ?", customName)
+	return link.Visits
+}
